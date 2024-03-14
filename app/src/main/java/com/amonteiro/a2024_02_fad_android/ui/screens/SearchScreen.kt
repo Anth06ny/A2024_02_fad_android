@@ -1,7 +1,9 @@
 package com.amonteiro.a2024_02_fad_android.ui.screens
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +27,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -55,10 +61,8 @@ fun SearchScreenPreview() {
 @Composable
 fun SearchScreen() {
 
-
-    var i = 5
-
-    Column(horizontalAlignment = Alignment.CenterHorizontally,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(4.dp)
 
     ) {
@@ -76,7 +80,7 @@ fun SearchScreen() {
 
         ) {
             items(pictureList.size) {
-                PictureRowItem(data =  pictureList[it])
+                PictureRowItem(data = pictureList[it])
             }
         }
 
@@ -118,7 +122,7 @@ fun SearchScreen() {
 fun SearchBar(modifier: Modifier = Modifier) {
     TextField(
         value = "", //Valeur par défaut
-        onValueChange = {newValue->}, //Action
+        onValueChange = { newValue -> }, //Action
         leadingIcon = { //Image d'icone
             Icon(
                 imageVector = Icons.Default.Search,
@@ -137,6 +141,8 @@ fun SearchBar(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun PictureRowItem(modifier: Modifier = Modifier, data: PictureBean) {
+
+    var expended by remember { mutableStateOf(false) }
 
     Row(modifier = modifier.background(MaterialTheme.colorScheme.surfaceVariant)) {
 
@@ -168,9 +174,14 @@ fun PictureRowItem(modifier: Modifier = Modifier, data: PictureBean) {
             )
             Spacer(Modifier.size(8.dp))
             Text(
-                text = data.longText.take(20) + "...",
+                text = if (!expended) data.longText.take(20) + "..." else data.longText,
                 fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .clickable {
+                        expended = !expended
+                    }
+                    .animateContentSize()
             )
         }
     }
