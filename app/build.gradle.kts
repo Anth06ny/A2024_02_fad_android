@@ -71,4 +71,8 @@ dependencies {
     //Téléchargement d'image
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
+    //Navigation
+    implementation("androidx.navigation:navigation-compose:2.+")
+
+
 }

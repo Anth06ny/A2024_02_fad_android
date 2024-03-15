@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.amonteiro.a2024_02_fad_android.ui.screens.SearchScreen
+import com.amonteiro.a2024_02_fad_android.ui.AppNavigation
 import com.amonteiro.a2024_02_fad_android.ui.theme.A2024_02_fad_androidTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
             A2024_02_fad_androidTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    SearchScreen()
+                    AppNavigation()
                 }
             }
         }

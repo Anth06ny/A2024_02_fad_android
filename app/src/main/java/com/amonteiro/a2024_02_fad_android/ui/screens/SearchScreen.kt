@@ -38,9 +38,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.amonteiro.a2024_02_fad_android.R
 import com.amonteiro.a2024_02_fad_android.model.PictureBean
 import com.amonteiro.a2024_02_fad_android.model.pictureList
+import com.amonteiro.a2024_02_fad_android.ui.Routes
 import com.amonteiro.a2024_02_fad_android.ui.theme.A2024_02_fad_androidTheme
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -60,7 +62,7 @@ fun SearchScreenPreview() {
 }
 
 @Composable
-fun SearchScreen() {
+fun SearchScreen(navHostController: NavHostController? = null) {
 
     println("SearchScreen recomposition")
 
@@ -91,7 +93,10 @@ fun SearchScreen() {
             val filterList = pictureList.filter { it.title.contains(searchText.value, ignoreCase = true) }
 
             items(filterList.size) {
-                PictureRowItem(data = filterList[it])
+                PictureRowItem(data = filterList[it],
+                    onPictureClick = {
+                        navHostController?.navigate(Routes.DetailScreen.withObject(filterList[it]))
+                    })
             }
         }
 
@@ -136,7 +141,7 @@ fun SearchBar(modifier: Modifier = Modifier, searchText: MutableState<String>) {
     println("SearchBar recomposition")
 
     TextField(
-        value = searchText.value , //Valeur par défaut
+        value = searchText.value, //Valeur par défaut
         onValueChange = {
             searchText.value = it
         }, //Action
@@ -169,7 +174,7 @@ fun SearchBar(modifier: Modifier = Modifier, searchText: MutableState<String>) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun PictureRowItem(modifier: Modifier = Modifier, data: PictureBean) {
+fun PictureRowItem(modifier: Modifier = Modifier, data: PictureBean, onPictureClick: () -> Unit) {
 
     var expended by remember { mutableStateOf(false) }
 
@@ -191,6 +196,7 @@ fun PictureRowItem(modifier: Modifier = Modifier, data: PictureBean) {
             modifier = Modifier
                 .heightIn(max = 100.dp) //Sans hauteur il prendra tous l'écran
                 .widthIn(max = 100.dp)
+                .clickable(onClick = onPictureClick)
         )
 
 
