@@ -27,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +45,7 @@ import com.amonteiro.a2024_02_fad_android.model.PictureBean
 import com.amonteiro.a2024_02_fad_android.model.pictureList
 import com.amonteiro.a2024_02_fad_android.ui.Routes
 import com.amonteiro.a2024_02_fad_android.ui.theme.A2024_02_fad_androidTheme
+import com.amonteiro.a2024_02_fad_android.viewmodel.MainViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
@@ -56,20 +58,27 @@ fun SearchScreenPreview() {
     //Utilisé par exemple dans MainActivity.kt sous setContent {...}
     A2024_02_fad_androidTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            SearchScreen()
+            //Jeu de donnée pour la Preview
+            val mainViewModel = MainViewModel()
+            mainViewModel.myList.addAll(pictureList)
+            mainViewModel.searchText.value = "BC"
+
+            SearchScreen(mainViewModel = mainViewModel)
         }
     }
 }
 
 @Composable
-fun SearchScreen(navHostController: NavHostController? = null) {
+fun SearchScreen(
+    navHostController: NavHostController? = null,
+    mainViewModel: MainViewModel) {
 
-    println("SearchScreen recomposition")
 
-    var searchText: MutableState<String> = remember {
-        mutableStateOf("")
+    //Lancement au démarrage de l'écran uniquement
+    LaunchedEffect("") {
+        println("loadData")
+        mainViewModel.loadData()
     }
-
 
 
     Column(
@@ -79,7 +88,7 @@ fun SearchScreen(navHostController: NavHostController? = null) {
     ) {
 
         //SearchBar
-        SearchBar(searchText = searchText)
+        SearchBar(searchText = mainViewModel.searchText)
 
 
         Spacer(Modifier.size(4.dp))
@@ -90,7 +99,7 @@ fun SearchScreen(navHostController: NavHostController? = null) {
         ) {
 
             println("LazyColumn recomposition")
-            val filterList = pictureList.filter { it.title.contains(searchText.value, ignoreCase = true) }
+            val filterList = mainViewModel.myList.filter { it.title.contains(mainViewModel.searchText.value, ignoreCase = true) }
 
             items(filterList.size) {
                 PictureRowItem(data = filterList[it],
@@ -102,7 +111,7 @@ fun SearchScreen(navHostController: NavHostController? = null) {
 
         Row {
             Button(
-                onClick = { searchText.value = "" },
+                onClick = { mainViewModel .searchText.value = "" },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding
             ) {
                 Icon(
@@ -117,7 +126,7 @@ fun SearchScreen(navHostController: NavHostController? = null) {
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
 
             Button(
-                onClick = { /* Do something! */ },
+                onClick = { mainViewModel.loadData() },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding
             ) {
                 Icon(
@@ -197,6 +206,9 @@ fun PictureRowItem(modifier: Modifier = Modifier, data: PictureBean, onPictureCl
                 .heightIn(max = 100.dp) //Sans hauteur il prendra tous l'écran
                 .widthIn(max = 100.dp)
                 .clickable(onClick = onPictureClick)
+                .clickable {
+                    onPictureClick()
+                }
         )
 
 

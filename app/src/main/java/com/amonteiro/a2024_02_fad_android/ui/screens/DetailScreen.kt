@@ -27,6 +27,7 @@ import androidx.navigation.NavHostController
 import com.amonteiro.a2024_02_fad_android.R
 import com.amonteiro.a2024_02_fad_android.model.pictureList
 import com.amonteiro.a2024_02_fad_android.ui.theme.A2024_02_fad_androidTheme
+import com.amonteiro.a2024_02_fad_android.viewmodel.MainViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
@@ -37,27 +38,20 @@ import com.bumptech.glide.integration.compose.placeholder
 fun DetailScreenPreview() {
     A2024_02_fad_androidTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            DetailScreen(1)
-        }
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Preview(showBackground = true, showSystemUi = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun DetailScreenNullPreview() {
-    A2024_02_fad_androidTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            DetailScreen(-1)
+            //Jeu de donnée pour la Preview
+            val mainViewModel = MainViewModel()
+            mainViewModel.myList.addAll(pictureList)
+            DetailScreen(1, mainViewModel = mainViewModel)
         }
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable //id du PictureBean à afficher
-fun DetailScreen(idPicture: Int, navHostController: NavHostController? = null) {
+fun DetailScreen(idPicture: Int,
+                 navHostController: NavHostController? = null, mainViewModel: MainViewModel) {
 
-    val pictureBean = pictureList.find { it.id == idPicture }
+    val pictureBean = mainViewModel.myList.find { it.id == idPicture }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(4.dp)) {
