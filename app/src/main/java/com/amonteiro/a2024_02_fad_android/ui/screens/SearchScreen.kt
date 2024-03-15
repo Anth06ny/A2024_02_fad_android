@@ -27,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,6 +62,14 @@ fun SearchScreenPreview() {
 @Composable
 fun SearchScreen() {
 
+    println("SearchScreen recomposition")
+
+    var searchText: MutableState<String> = remember {
+        mutableStateOf("")
+    }
+
+
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(4.dp)
@@ -68,7 +77,7 @@ fun SearchScreen() {
     ) {
 
         //SearchBar
-        SearchBar()
+        SearchBar(searchText = searchText)
 
 
         Spacer(Modifier.size(4.dp))
@@ -76,17 +85,19 @@ fun SearchScreen() {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.weight(1f)
-
-
         ) {
-            items(pictureList.size) {
-                PictureRowItem(data = pictureList[it])
+
+            println("LazyColumn recomposition")
+            val filterList = pictureList.filter { it.title.contains(searchText.value, ignoreCase = true) }
+
+            items(filterList.size) {
+                PictureRowItem(data = filterList[it])
             }
         }
 
         Row {
             Button(
-                onClick = { /* Do something! */ },
+                onClick = { searchText.value = "" },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding
             ) {
                 Icon(
@@ -119,10 +130,17 @@ fun SearchScreen() {
 }
 
 @Composable
-fun SearchBar(modifier: Modifier = Modifier) {
+fun SearchBar(modifier: Modifier = Modifier, searchText: MutableState<String>) {
+
+
+    println("SearchBar recomposition")
+
     TextField(
-        value = "", //Valeur par défaut
-        onValueChange = { newValue -> }, //Action
+        value = searchText.value , //Valeur par défaut
+        onValueChange = {
+            searchText.value = it
+        }, //Action
+        singleLine = true,
         leadingIcon = { //Image d'icone
             Icon(
                 imageVector = Icons.Default.Search,
@@ -137,6 +155,17 @@ fun SearchBar(modifier: Modifier = Modifier) {
             .heightIn(min = 56.dp) //Hauteur minimum
     )
 }
+
+
+//@Composable
+//fun HideKeyboard() {
+//    val context = LocalContext.current
+//    val focusManager = LocalFocusManager.current
+//
+//    focusManager.clearFocus()
+//    val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//    inputMethodManager.hideSoftInputFromWindow(focusManager.currentFocus?.windowToken, 0)
+//}
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
