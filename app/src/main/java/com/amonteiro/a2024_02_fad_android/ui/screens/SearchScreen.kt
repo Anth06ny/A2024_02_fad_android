@@ -1,6 +1,7 @@
 package com.amonteiro.a2024_02_fad_android.ui.screens
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -90,6 +92,10 @@ fun SearchScreen(
         //SearchBar
         SearchBar(searchText = mainViewModel.searchText)
 
+        //Animation d'apparition de la progressBar
+        AnimatedVisibility(visible = mainViewModel.runInProgress.value){
+            CircularProgressIndicator()
+        }
 
         Spacer(Modifier.size(4.dp))
 

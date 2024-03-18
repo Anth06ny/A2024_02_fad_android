@@ -14,6 +14,7 @@ class MainViewModel : ViewModel() {
 
     val searchText = mutableStateOf("")
     val myList = mutableStateListOf<PictureBean>()
+    val runInProgress = mutableStateOf(false)
 
     //fun filterList() = myList.filter { it.title.contains(searchText.value, true) }
 
@@ -23,6 +24,9 @@ class MainViewModel : ViewModel() {
 
     fun loadData() {//Simulation de chargement de donnée
         myList.clear()
+
+        //Une tache en cours
+        runInProgress.value = true
 
         viewModelScope.launch(Dispatchers.Default) {
 
@@ -36,8 +40,13 @@ class MainViewModel : ViewModel() {
                     weather.name,
                     "Il fait ${weather.main.temp}°")
             }
-            //J'ajoute tous les éléments à myList qui est observé
-            myList.addAll(listPicture)
+            //Retourner sur le Thread principale
+            launch(Dispatchers.Main) {
+                //J'ajoute tous les éléments à myList qui est observé
+                myList.addAll(listPicture)
+                //Tache terminée
+                runInProgress.value = false
+            }
         }
     }
 }
