@@ -6,11 +6,8 @@ import okhttp3.Request
 
 fun main() {
 
-//    var res = (WeatherAPI.loadWeather("Nice"))
-//    println(res)
-
-
-
+    var res = WeatherAPI.loadWeatherAround("Nice")
+    println(res)
 }
 
 object WeatherAPI {
@@ -28,8 +25,30 @@ object WeatherAPI {
 
         //Eventuel contrôle ou extraction de données
 
+
+
         //Retourner la donnée
         return data
+    }
+
+    fun loadWeatherAround(cityName:String) : List<WeatherBean> {
+        var json = sendGet("https://api.openweathermap.org/data/2.5/find?q=$cityName&cnt=5&appid=b80967f0a6bd10d23e44848547b26550&units=metric&lang=fr")
+
+        val weatherAPIResult = gson.fromJson(json, WeatherAPIResult::class.java)
+
+        //V1
+        weatherAPIResult.list.forEach {
+            it.weather.getOrNull(0)?.icon =  "https://openweathermap.org/img/wn/${it.weather.getOrNull(0)?.icon}@4x.png"
+        }
+        //extraction
+        return weatherAPIResult.list
+
+        //v2
+//        return weatherAPIResult.list.onEach {
+//            it.weather.getOrNull(0)?.let {
+//                it.icon =  "https://openweathermap.org/img/wn/${it.icon}@4x.png"
+//            }
+//        }
     }
 
     //Méthode qui prend en entrée une url, execute la requête
@@ -52,8 +71,11 @@ object WeatherAPI {
     }
 }
 
-
-data class WeatherBean(var main: TempBean, var name: String, var wind: WindBean, var toto: String)
+//Objet retourner par weatherAround
+data class WeatherAPIResult(var list : List<WeatherBean>)
+data class WeatherBean(var main: TempBean, var name: String, var wind: WindBean, var weather : List<DescriptionBean>)
 data class TempBean(var temp: Double)
 data class WindBean(var speed: Double)
+data class DescriptionBean(var description: String, var icon:String)
+
 

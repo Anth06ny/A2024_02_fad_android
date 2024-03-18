@@ -17,9 +17,7 @@ class MainViewModel : ViewModel() {
         searchText.value = newText
     }
 
-    fun loadData(forece:Boolean = true) {//Simulation de chargement de donnée
-
-
+    fun loadData() {//Simulation de chargement de donnée
         myList.clear()
         Thread.sleep(1000) //simule temps de la requête
         myList.addAll(pictureList.shuffled()) //Charge la liste en mode mélangé

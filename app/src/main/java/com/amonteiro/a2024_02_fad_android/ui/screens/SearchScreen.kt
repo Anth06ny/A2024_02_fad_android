@@ -39,6 +39,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.amonteiro.a2024_02_fad_android.R
 import com.amonteiro.a2024_02_fad_android.model.PictureBean
@@ -59,7 +60,7 @@ fun SearchScreenPreview() {
     A2024_02_fad_androidTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             //Jeu de donnée pour la Preview
-            val mainViewModel = MainViewModel()
+            val mainViewModel : MainViewModel = viewModel()
             mainViewModel.myList.addAll(pictureList)
             mainViewModel.searchText.value = "BC"
 
@@ -84,7 +85,6 @@ fun SearchScreen(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(4.dp)
-
     ) {
 
         //SearchBar
@@ -145,9 +145,6 @@ fun SearchScreen(
 
 @Composable
 fun SearchBar(modifier: Modifier = Modifier, searchText: MutableState<String>) {
-
-
-    println("SearchBar recomposition")
 
     TextField(
         value = searchText.value, //Valeur par défaut
