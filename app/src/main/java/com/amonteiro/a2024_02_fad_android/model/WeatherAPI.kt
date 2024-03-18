@@ -7,7 +7,15 @@ import okhttp3.Request
 fun main() {
 
     var res = WeatherAPI.loadWeatherAround("Nice")
-    println(res)
+
+    val weather :WeatherBean = res[0]
+    val picture : PictureBean = PictureBean(
+        weather.id,
+        weather.weather.getOrNull(0)?.icon ?: "",
+        weather.name,
+        "Il fait ${weather.main.temp}°")
+
+    println(picture)
 }
 
 object WeatherAPI {
@@ -73,7 +81,7 @@ object WeatherAPI {
 
 //Objet retourner par weatherAround
 data class WeatherAPIResult(var list : List<WeatherBean>)
-data class WeatherBean(var main: TempBean, var name: String, var wind: WindBean, var weather : List<DescriptionBean>)
+data class WeatherBean(var id:Int, var main: TempBean, var name: String, var wind: WindBean, var weather : List<DescriptionBean>)
 data class TempBean(var temp: Double)
 data class WindBean(var speed: Double)
 data class DescriptionBean(var description: String, var icon:String)

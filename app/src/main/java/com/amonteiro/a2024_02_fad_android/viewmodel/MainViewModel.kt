@@ -3,8 +3,12 @@ package com.amonteiro.a2024_02_fad_android.viewmodel
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.amonteiro.a2024_02_fad_android.model.PictureBean
-import com.amonteiro.a2024_02_fad_android.model.pictureList
+import com.amonteiro.a2024_02_fad_android.model.WeatherAPI
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 
 class MainViewModel : ViewModel() {
 
@@ -19,7 +23,21 @@ class MainViewModel : ViewModel() {
 
     fun loadData() {//Simulation de chargement de donnée
         myList.clear()
-        Thread.sleep(1000) //simule temps de la requête
-        myList.addAll(pictureList.shuffled()) //Charge la liste en mode mélangé
+
+        viewModelScope.launch(Dispatchers.Default) {
+
+            //Requête
+            val listWeather = WeatherAPI.loadWeatherAround(searchText.value)
+
+            val listPicture = listWeather.map { weather ->
+                PictureBean(
+                    weather.id,
+                    weather.weather.getOrNull(0)?.icon ?: "",
+                    weather.name,
+                    "Il fait ${weather.main.temp}°")
+            }
+            //J'ajoute tous les éléments à myList qui est observé
+            myList.addAll(listPicture)
+        }
     }
 }

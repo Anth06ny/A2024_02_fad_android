@@ -27,7 +27,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -75,11 +74,12 @@ fun SearchScreen(
     mainViewModel: MainViewModel) {
 
 
-    //Lancement au démarrage de l'écran uniquement
-    LaunchedEffect("") {
-        println("loadData")
-        mainViewModel.loadData()
-    }
+//    //Lancement au démarrage de l'écran uniquement
+//    LaunchedEffect("") {
+//        println("loadData")
+    //mainViewModel.searchText.value = "Toulouse"
+//        mainViewModel.loadData()
+//    }
 
 
     Column(
@@ -98,8 +98,8 @@ fun SearchScreen(
             modifier = Modifier.weight(1f)
         ) {
 
-            println("LazyColumn recomposition")
-            val filterList = mainViewModel.myList.filter { it.title.contains(mainViewModel.searchText.value, ignoreCase = true) }
+            //
+            val filterList = mainViewModel.myList //.filter { it.title.contains(mainViewModel.searchText.value, ignoreCase = true) }
 
             items(filterList.size) {
                 PictureRowItem(data = filterList[it],
