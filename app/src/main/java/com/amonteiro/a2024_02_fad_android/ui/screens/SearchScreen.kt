@@ -45,6 +45,7 @@ import androidx.navigation.NavHostController
 import com.amonteiro.a2024_02_fad_android.R
 import com.amonteiro.a2024_02_fad_android.model.PictureBean
 import com.amonteiro.a2024_02_fad_android.model.pictureList
+import com.amonteiro.a2024_02_fad_android.ui.MyError
 import com.amonteiro.a2024_02_fad_android.ui.Routes
 import com.amonteiro.a2024_02_fad_android.ui.theme.A2024_02_fad_androidTheme
 import com.amonteiro.a2024_02_fad_android.viewmodel.MainViewModel
@@ -64,6 +65,8 @@ fun SearchScreenPreview() {
             val mainViewModel : MainViewModel = viewModel()
             mainViewModel.myList.addAll(pictureList)
             mainViewModel.searchText.value = "BC"
+            mainViewModel.errorMessage.value = "Un message d'erreur"
+            mainViewModel.runInProgress.value = true
 
             SearchScreen(mainViewModel = mainViewModel)
         }
@@ -96,6 +99,8 @@ fun SearchScreen(
         AnimatedVisibility(visible = mainViewModel.runInProgress.value){
             CircularProgressIndicator()
         }
+
+        MyError(errorMessage = mainViewModel.errorMessage.value)
 
         Spacer(Modifier.size(4.dp))
 
