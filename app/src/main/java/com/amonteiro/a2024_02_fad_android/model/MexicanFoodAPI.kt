@@ -4,13 +4,18 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.lang.reflect.Method
+
 
 fun main() {
+    //Appel 1
+    val res =MexicanFoodAPI.loadListOfFood()
+    println(res.joinToString("\n") {
+        "-${it.title} : ${it.difficulty}"
+    })
 
-    var res = (MexicanFoodAPI.loadFood("4"))
-    println(res)
-
+    //Appel2
+    val detail =MexicanFoodAPI.foodDetail("10")
+    println(detail)
 }
 
 object MexicanFoodAPI {
@@ -18,27 +23,28 @@ object MexicanFoodAPI {
     val gson = Gson()
     val client = OkHttpClient()
 
-    fun loadFood(id: String): MexicanFoodBean {
-        //Eventuel contrôle
-        //Réaliser la requête.
-        val json: String = sendGet("/$id")
-
-        //Parser le JSON avec le bon bean et GSON
-        val data = gson.fromJson(json, MexicanFoodBean::class.java)
-
-        //Eventuel contrôle ou extraction de données
-
-        //Retourner la donnée
-        return data
+    //Charge la liste des recettes avec image et id
+    fun foodDetail(id:String): MexicanFoodBean {
+        val json = sendGet("/$id")
+        return gson.fromJson(json, MexicanFoodBean::class.java)
     }
+
+    //Charge la liste des recettes avec image et id
+    fun loadListOfFood(): List<MexicanFoodBean> {
+        val json = sendGet("")
+        return gson.fromJson(json, Array<MexicanFoodBean>::class.java).toList()
+    }
+
 
     //Méthode qui prend en entrée une url, execute la requête
     //Retourne le code HTML/JSON reçu
     fun sendGet(url: String): String {
-        println("url : $url")
+        val finalUrl = "https://the-mexican-food-db.p.rapidapi.com$url"
+
+        println("finalUrl : $finalUrl")
         //Création de la requête
         val request = Request.Builder()
-            .url("https://the-mexican-food-db.p.rapidapi.com$url")
+            .url(finalUrl)
             .get()
             .addHeader("X-RapidAPI-Key", "93329c7cf9msha136bd696cd1040p10a1dejsnbc52cdb0746e")
             .addHeader("X-RapidAPI-Host", "the-mexican-food-db.p.rapidapi.com")
@@ -55,31 +61,36 @@ object MexicanFoodAPI {
             it.body.string()
         }
     }
+
+
 }
 
 data class MexicanFoodBean(
-    var description: String,
     var difficulty: String,
     var id: String,
     var image: String,
-    var ingredients: List<String>,
-    var method: List<MethodBean>,
-    var portion: String,
-    var time: String,
-    var title: String
+    var title: String,
+
+    var description: String?,
+    var ingredients: List<String>?,
+    var method: List<StepBean>?,
+    var portion: String?,
+    var time: String?
 )
 
-data class MethodBean(
+data class StepBean(
     @SerializedName("Step 1")
-    var step1: String,
+    var step1: String?,
     @SerializedName("Step 2")
-    var step2: String,
+    var step2: String?,
     @SerializedName("Step 3")
-    var step3: String,
+    var step3 : String?,
     @SerializedName("Step 4")
-    var step4: String,
+    var step4 : String?,
     @SerializedName("Step 5")
-    var step5: String,
+    var step5 : String?,
     @SerializedName("Step 6")
-    var step6: String
+    var step6 : String?,
+    @SerializedName("Step 7")
+    var step7 : String?,
 )
