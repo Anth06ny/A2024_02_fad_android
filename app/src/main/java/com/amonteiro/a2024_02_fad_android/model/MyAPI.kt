@@ -2,14 +2,31 @@ package com.amonteiro.a2024_02_fad_android.model
 
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
 fun main() {
+//
+//   val res = MyAPI.increment(StudentBean("Toto",6))
+//    println("res=$res")
 
-   val res = MyAPI.increment(StudentBean("Toto",6))
-    println("res=$res")
+    val client = OkHttpClient()
+
+    val mediaType = "application/x-www-form-urlencoded".toMediaTypeOrNull()
+    val body = RequestBody.create(mediaType, "text=Hello%20World!&from=auto&to=ar")
+    val request = Request.Builder()
+        .url("https://translate281.p.rapidapi.com/")
+        .post(body)
+        .addHeader("content-type", "application/x-www-form-urlencoded")
+        .addHeader("X-RapidAPI-Key", "93329c7cf9msha136bd696cd1040p10a1dejsnbc52cdb0746e")
+        .addHeader("X-RapidAPI-Host", "translate281.p.rapidapi.com")
+        .build()
+
+    val response = client.newCall(request).execute()
+    println(response.body.string())
 
 }
 

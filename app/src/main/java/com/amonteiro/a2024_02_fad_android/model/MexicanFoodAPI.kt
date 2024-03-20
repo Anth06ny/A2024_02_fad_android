@@ -8,14 +8,15 @@ import okhttp3.Request
 
 fun main() {
     //Appel 1
-    val res =MexicanFoodAPI.loadListOfFood()
-    println(res.joinToString("\n") {
-        "-${it.title} : ${it.difficulty}"
-    })
+    val res =MexicanFoodAPI.loadListOfFood().first()
+    println(res)
+//    println(res.joinToString("\n") {
+//        "-${it.title} : ${it.difficulty}"
+//    })
 
-    //Appel2
-    val detail =MexicanFoodAPI.foodDetail("10")
-    println(detail)
+//    //Appel2
+//    val detail =MexicanFoodAPI.foodDetail("10")
+//    println(detail)
 }
 
 object MexicanFoodAPI {
@@ -71,11 +72,11 @@ data class MexicanFoodBean(
     var image: String,
     var title: String,
 
-    var description: String?,
-    var ingredients: List<String>?,
-    var method: List<StepBean>?,
-    var portion: String?,
-    var time: String?
+    var description: String? = null,
+    var ingredients: List<String>?= null,
+    var method: List<StepBean>?= null,
+    var portion: String?= null,
+    var time: String?= null
 )
 
 data class StepBean(

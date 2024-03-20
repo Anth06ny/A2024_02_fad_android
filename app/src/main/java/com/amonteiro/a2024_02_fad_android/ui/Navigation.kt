@@ -10,8 +10,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.amonteiro.a2024_02_fad_android.model.PictureBean
 import com.amonteiro.a2024_02_fad_android.ui.screens.DetailScreen
+import com.amonteiro.a2024_02_fad_android.ui.screens.MexicanListScreen
 import com.amonteiro.a2024_02_fad_android.ui.screens.SearchScreen
 import com.amonteiro.a2024_02_fad_android.viewmodel.MainViewModel
+import com.amonteiro.a2024_02_fad_android.viewmodel.MexicanViewModel
 
 //sealed permet de dire qu'une classe est héritable (ici par SearchScreen et DetailScreen)
 //Uniquement par les sous classes qu'elle contient
@@ -26,6 +28,8 @@ sealed class Routes(val route: String) {
 
         fun withObject(data : PictureBean) = "detailScreen/${data.id}"
     }
+
+    data object MexicanListScreen : Routes("mexicanlistScreen")
 }
 
 @Composable
@@ -35,10 +39,11 @@ fun AppNavigation() {
 
     //viewModel appartient au framework peremt de récupérer une instance déjà existante s'il en existe une
     val mainViewModel:MainViewModel = viewModel()
+    val mexicanViewModel : MexicanViewModel = viewModel()
 
 
     //Import version avec Composable
-    NavHost(navController = navHostController, startDestination = Routes.SearchScreen.route) {
+    NavHost(navController = navHostController, startDestination = Routes.MexicanListScreen.route) {
         //Route 1 vers notre SearchScreen
         composable(Routes.SearchScreen.route) {
             //on peut passer le navHostController à un écran s'il déclenche des navigations
@@ -53,5 +58,11 @@ fun AppNavigation() {
             val id = it.arguments?.getInt("id") ?: 1
             DetailScreen(id, navHostController, mainViewModel=mainViewModel)
         }
+
+        composable(Routes.MexicanListScreen.route) {
+            //on peut passer le navHostController à un écran s'il déclenche des navigations
+            MexicanListScreen(navHostController, mexicanViewModel)
+        }
+
     }
 }
